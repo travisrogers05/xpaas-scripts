@@ -44,22 +44,22 @@ for template in $TEMPLATELIST ;
 
 
 # ensure the image versions are available (fixes a bug)
-for is in jboss-eap71-openshift \
-  jboss-eap64-openshift \
-  jboss-webserver31-tomcat7-openshift \
-  jboss-webserver31-tomcat8-openshift \
-  jboss-datagrid71-openshift \
-  jboss-datagrid71-client-openshift \
-  jboss-datavirt64-openshift \
-  jboss-datavirt64-driver-openshift \
-  jboss-processserver64-openshift \
-  jboss-decisionserver64-openshift \
-  jboss-amq-63 \
-  redhat-openjdk18-openshift \
-  redhat-sso72-openshift ;
-do
-  oc -n openshift import-image ${is} --all=true
-done
+#for is in jboss-eap71-openshift \
+#  jboss-eap64-openshift \
+#  jboss-webserver31-tomcat7-openshift \
+#  jboss-webserver31-tomcat8-openshift \
+#  jboss-datagrid71-openshift \
+#  jboss-datagrid71-client-openshift \
+#  jboss-datavirt64-openshift \
+#  jboss-datavirt64-driver-openshift \
+#  jboss-processserver64-openshift \
+#  jboss-decisionserver64-openshift \
+#  jboss-amq-63 \
+#  redhat-openjdk18-openshift \
+#  redhat-sso72-openshift ;
+#do
+#  oc -n openshift import-image ${is} --all=true
+#done
 
 
  
