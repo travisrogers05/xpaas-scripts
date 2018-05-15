@@ -11,7 +11,7 @@
 REPOURL=https://github.com/jboss-openshift/application-templates
 
 # Set the desired tag to use
-TAG=ose-v1.4.10-1
+TAG=ose-v1.4.12
 
 # get a specific tag of the jboss-openshift repo
 git clone $REPOURL
