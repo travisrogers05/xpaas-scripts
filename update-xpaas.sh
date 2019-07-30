@@ -42,12 +42,13 @@ function updateImagestreams () {
   TARGET_DIR=$1
   
   # change to a specific child directory
-  cd $TARGET_DIR
+  cd $CWD/$TARGET_DIR
 
-  ISLIST=`ls *.@(json|yaml) | grep -v '/secrets/' | grep 'image-stream'`
-  COUNT=`wc -l $ISLIST`
-  if [ "$COUNT" -eq "0" ]; then
-    echo "Unable to find any imagestreams in $TARGET_DIR"
+  echo "=****= Inspecting $TARGET_DIR for imagestream files"
+
+  ISLIST=`find . -maxdepth 1 -name "*.json" -o -name "*.yaml" | grep -v '/secrets/' | grep 'image-stream' | xargs -n 1 basename`
+  if [ -z "$ISLIST" ]; then
+    echo "WARNING: Unable to find any imagestreams in $TARGET_DIR"
     cd $CWD
     return
   fi
@@ -57,9 +58,9 @@ function updateImagestreams () {
   do
     echo "updating imagestream ${stream}"
     # delete current imagestream
-#    cat ${stream} | oc -n openshift delete -f -
+    cat ${stream} | oc -n openshift delete -f -
     # create new imagestream
-#    oc -n openshift create -f ${stream}
+    oc -n openshift create -f ${stream}
   done
 
   # reset the current directory to the parent directory
@@ -70,13 +71,14 @@ function updateTemplates () {
   TARGET_DIR=$1
   
   # change to a specific child directory
-  cd $TARGET_DIR
+  cd $CWD/$TARGET_DIR
+
+  echo "=****= Inspecting $TARGET_DIR for template files"
 
   # get the list of template file names
-  TEMPLATELIST=`ls *.@(json|yaml) | grep -v '/secrets/' | grep -v 'image-stream'`
-  COUNT=`wc -l $TEMPLATELIST`
-  if [ "$COUNT" -eq "0" ]; then
-    echo "Unable to find any templates in $TARGET_DIR"
+  TEMPLATELIST=$(find . -maxdepth 1 -name "*.json" -o -name "*.yaml" | grep -v '/secrets/' | grep -v 'image-stream' | xargs -n 1 basename)
+  if [ -z "$TEMPLATELIST" ]; then
+    echo "WARNING: Unable to find any templates in $TARGET_DIR"
     cd $CWD
     return
   fi
@@ -85,14 +87,14 @@ function updateTemplates () {
   for template in $TEMPLATELIST ;
   do
     echo "deleting template ${template}"
-#    cat ${template} | oc -n openshift delete template -f -
+    cat ${template} | oc -n openshift delete -f -
   done
 
   # create templates
   for template in $TEMPLATELIST ;
   do
     echo "creating template ${template}"
-#    oc -n openshift create -f ${template}
+    oc -n openshift create -f ${template}
   done
 
   # reset the current directory to the parent directory
@@ -116,8 +118,8 @@ git clone -b $RHDS_BRANCH $RHDS_REPOURL
 # update the imagestreams and templates
 updateImagestreams $(basename $RHEAP6_REPOURL)/eap
 updateTemplates $(basename $RHEAP6_REPOURL)/eap
-updateImagestreams $(basename $RHDV_REPOURL)/resources/openshift
-updateTemplates $(basename $RHDV_REPOURL)/resources/openshift
+updateImagestreams $(basename $RHDV_REPOURL)/resources/openshift/templates
+updateTemplates $(basename $RHDV_REPOURL)/resources/openshift/templates
 updateImagestreams $(basename $RHDM_REPOURL)
 updateTemplates $(basename $RHDM_REPOURL)/templates
 updateImagestreams $(basename $RHPAM_REPOURL)
@@ -128,7 +130,7 @@ updateImagestreams $(basename $RHJWS3_REPOURL)/templates
 updateTemplates $(basename $RHJWS3_REPOURL)/templates
 updateImagestreams $(basename $RHJWS5_REPOURL)/templates
 updateTemplates $(basename $RHJWS5_REPOURL)/templates
-updateImagestreams $(basename $RHAMQ_REPOURL)/templates
+updateImagestreams $(basename $RHAMQ_REPOURL)
 updateTemplates $(basename $RHAMQ_REPOURL)/templates
 updateImagestreams $(basename $RHDG_REPOURL)/templates
 updateTemplates $(basename $RHDG_REPOURL)/templates
